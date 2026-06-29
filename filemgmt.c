@@ -3,10 +3,10 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_NAME 50
-#define BLOCK_SIZE 64
-#define NUM_BLOCKS 1024
-#define MAX_BLOCKS_PER_FILE 8
+#define MAX_NAME 50 // Tamanho máximo do nome de arquivo/diretório
+#define BLOCK_SIZE 64 // Tamanho do bloco de dados em bytes
+#define NUM_BLOCKS 1024 // Número total de blocos no disco virtual
+#define MAX_BLOCKS_PER_FILE 8 // Número máximo de blocos que um arquivo pode ocupar
 
 // Definições de Cores ANSI para o Terminal
 #define ANSI_RESET          "\x1b[0m"
@@ -24,7 +24,7 @@ typedef enum { ARQ_DADO, ARQ_PROG, DIR_TIPO } TipoArquivo;
 char DISCO[NUM_BLOCKS][BLOCK_SIZE];
 int blocos_livres[NUM_BLOCKS]; // 0 = livre, 1 = ocupado
 
-// Estrutura do Bloco de Controle de Arquivo (FCB / Inode)
+// Estrutura do Bloco de Controle de Arquivo (FCB)
 typedef struct FCB {
     int id;                           // ID único (Inodo)
     char nome[MAX_NAME];              // Nome do arquivo/diretório
@@ -55,7 +55,7 @@ char usuario_atual[20] = "root";
 char grupo_atual[20] = "root";
 int proximo_inodo_id = 1;
 
-// Inicializa o mapa de blocos do disco virtual
+// Inicializa o mapa de blocos do disco virtual com todos livres e limpa os blocos de dados
 void init_disco() {
     for (int i = 0; i < NUM_BLOCKS; i++) {
         blocos_livres[i] = 0;
@@ -200,7 +200,7 @@ void cmd_mkdir(const char* nome) {
         printf(ANSI_VERMELHO "Erro: Permissão negada para criar diretório aqui." ANSI_RESET "\n");
         return;
     }
-
+ 
     No* atual = diretorio_atual->filho;
     while (atual != NULL) {
         if (strcmp(atual->fcb.nome, nome) == 0) {
@@ -263,7 +263,7 @@ void cmd_ls() {
     No* atual = diretorio_atual->filho;
     printf(ANSI_ROXO "Inodo\tPermissões\tDono\tGrupo\tTam(B)\tBlk\tCriado\tModif\tAcess\tNome" ANSI_RESET "\n");
     printf("-------------------------------------------------------------------------------------------------\n");
-    while (atual != NULL) {
+    while (atual != NULL) { //%d\t é o ID do inodo
         printf("%d\t", atual->fcb.id);
         printf((atual->fcb.tipo == DIR_TIPO) ? "d" : "-");
         print_permissoes_ext(atual->fcb.permissoes);
@@ -602,7 +602,6 @@ int main() {
 
     printf(ANSI_CIANO "==================================================" ANSI_RESET "\n");
     printf(ANSI_VERDE_NEGRITO "   SIMULADOR DE SISTEMA DE ARQUIVOS EM MEMÓRIA     " ANSI_RESET "\n");
-    printf(ANSI_VERDE_NEGRITO "   Sistemas Operacionais - Ciência da Computação   " ANSI_RESET "\n");
     printf(ANSI_CIANO "==================================================" ANSI_RESET "\n");
     printf("Digite '" ANSI_AMARELO "help" ANSI_RESET "' para ver a lista de comandos.\n");
     printf("Você também pode usar '" ANSI_AMARELO "<comando> /?" ANSI_RESET "' para ajuda específica.\n\n");

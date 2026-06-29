@@ -1,8 +1,8 @@
 # Mini Sistema de Arquivos em Memória
 
 # Alunos
-->  Lucas Emanuel Angioletti do Amaral 
-->  Carlos Isidro
+Lucas Emanuel Angioletti do Amaral
+Carlos Isidro
 
 # Descrição
 Este projeto consiste na implementação de um mini sistema de arquivos em memória, desenvolvido na linguagem C, com o objetivo de simular o funcionamento básico de um sistema de arquivos semelhante ao utilizado em sistemas Linux.
